@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#BA7517" />
+  <meta name="theme-color" content="#C0392B" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -13,193 +13,138 @@
   <title>Shot Logger</title>
   <style>
     :root {
-      --bg: #111111;
-      --bg2: #1a1a1a;
-      --bg3: #242424;
-      --card: #1c1207;
-      --border: rgba(186,117,23,0.18);
-      --border2: rgba(186,117,23,0.35);
-      --text: #f5e6c8;
-      --text2: #c9a05a;
-      --text3: #8a6835;
-      --amber-bg: #3d2200;
-      --amber-border: #BA7517;
-      --amber-text: #FAC775;
-      --amber-dot: #EF9F27;
-      --red-bg: #3b0f0f;
-      --red-border: #A32D2D;
-      --red-text: #F7C1C1;
-      --chip-bg: #251a0a;
-      --radius: 12px;
-      --radius-sm: 8px;
-      --radius-pill: 20px;
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --bg:#111111;--bg2:#1a1a1a;--bg3:#242424;--card:#1a1a1a;
+      --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
+      --text:#f0f0f0;--text2:#a0a0a0;--text3:#666666;
+      --red-bg:#3b0d0d;--red-border:#C0392B;--red-text:#E74C3C;--red-solid:#C0392B;
+      --yellow-bg:#2e2500;--yellow-border:#D4AC0D;--yellow-text:#F4D03F;
+      --green-bg:#0a2e16;--green-border:#1E8449;--green-text:#27AE60;
+      --blue-bg:#0d1b2e;--blue-border:#2980B9;--blue-text:#5DADE2;
+      --white-bg:#2e2e2e;--white-border:#cccccc;--white-text:#ffffff;
+      --chip-bg:#2a2a2a;--radius:12px;--radius-sm:8px;--radius-pill:20px;
+      --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--text); }
-
-    .app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
-
-    .topbar {
-      background: var(--bg2);
-      padding: calc(14px + var(--safe-top)) 16px 12px;
-      border-bottom: 0.5px solid var(--border);
-      flex-shrink: 0;
-    }
-    .topbar-row { display: flex; align-items: center; justify-content: space-between; }
-    .topbar-title { font-size: 20px; font-weight: 600; color: var(--text); }
-    .topbar-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
-    .roll-input {
-      font-family: inherit; font-size: 13px; background: var(--bg3);
-      border: 0.5px solid var(--border); border-radius: var(--radius-pill);
-      padding: 6px 12px; color: var(--text); width: 140px;
-    }
-    .roll-input::placeholder { color: var(--text3); }
-
-    .scroll-body { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
-
-    .card { background: var(--card); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 14px; }
-    .card-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
-
-    .frame-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-    .frame-circle {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: var(--bg3); border: 0.5px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 600; color: var(--amber-text); flex-shrink: 0;
-    }
-    .frame-meta { font-size: 13px; color: var(--text3); flex: 1; }
-
-    .mic-btn {
-      display: flex; align-items: center; gap: 6px; padding: 7px 14px;
-      border-radius: var(--radius-pill); border: 0.5px solid var(--border);
-      background: var(--bg3); cursor: pointer; font-size: 13px; color: var(--text2);
-      user-select: none; white-space: nowrap;
-    }
-    .mic-btn.listening { background: var(--red-bg); border-color: var(--red-border); color: var(--red-text); }
-    .mic-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
-    .mic-btn.listening .mic-dot { background: var(--red-text); animation: pulse 0.8s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-    .voice-feedback { font-size: 11px; color: var(--text3); margin-top: 4px; min-height: 15px; font-style: italic; }
-
-    .toggles-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-    .pill {
-      display: flex; align-items: center; gap: 6px; padding: 6px 12px;
-      border-radius: var(--radius-pill); border: 0.5px solid var(--border);
-      background: var(--bg3); cursor: pointer; user-select: none;
-    }
-    .pill.on { background: var(--amber-bg); border-color: var(--amber-border); }
-    .pill span { font-size: 13px; color: var(--text2); }
-    .pill.on span { color: var(--amber-text); font-weight: 500; }
-    .pill-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
-    .pill.on .pill-dot { background: var(--amber-dot); }
-
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
-
-    select, input[type="text"], input[type="number"], textarea {
-      font-family: inherit; font-size: 14px; color: var(--text);
-      background: var(--bg3); border: 0.5px solid var(--border);
-      border-radius: var(--radius-sm); padding: 8px 10px; width: 100%;
-      appearance: none; -webkit-appearance: none;
-    }
-    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a6835' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
-    select option { background: #1c1207; color: #f5e6c8; }
-    select optgroup { background: #251a0a; color: #8a6835; }
-    input::placeholder, textarea::placeholder { color: var(--text3); }
-    textarea { resize: none; height: 64px; }
-
-    .custom-input { display: none; margin-top: 5px; }
-    .custom-input.show { display: block; }
-
-    .gps-row { display: flex; gap: 8px; }
-    .gps-row input { flex: 1; }
-    .gps-btn {
-      font-family: inherit; font-size: 12px; padding: 0 14px;
-      background: var(--bg3); border: 0.5px solid var(--border);
-      border-radius: var(--radius-sm); color: var(--text2); cursor: pointer; white-space: nowrap;
-    }
-    .gps-btn:active { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber-text); }
-
-    .fab-row {
-      padding: 12px 12px calc(12px + var(--safe-bottom));
-      background: var(--bg2); border-top: 0.5px solid var(--border);
-      display: flex; gap: 10px; align-items: center; flex-shrink: 0;
-    }
-    .fab {
-      flex: 1; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer;
-      border-radius: var(--radius); font-family: inherit;
-      background: var(--amber-bg); border: 0.5px solid var(--amber-border); color: var(--amber-text);
-    }
-    .fab:active { opacity: 0.8; }
-    .fab-secondary {
-      flex: 0 0 auto; padding: 14px 16px; font-size: 13px; cursor: pointer;
-      border-radius: var(--radius); font-family: inherit;
-      background: var(--bg3); border: 0.5px solid var(--border); color: var(--text2);
-    }
-    .fab-secondary:active { opacity: 0.8; }
-
-    .shots-list { display: flex; flex-direction: column; gap: 8px; }
-    .shot-card { background: var(--bg3); border-radius: var(--radius-sm); border: 0.5px solid var(--border); padding: 12px 14px; }
-    .shot-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-    .shot-num { font-size: 13px; font-weight: 500; color: var(--text); }
-    .shot-time { font-size: 11px; color: var(--text3); }
-    .chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 5px; }
-    .chip { font-size: 11px; padding: 3px 8px; border-radius: var(--radius-pill); background: var(--chip-bg); border: 0.5px solid var(--border); color: var(--text2); }
-    .chip-hi { background: var(--red-bg); border-color: var(--red-border); color: var(--red-text); }
-    .shot-gps { font-size: 10px; color: var(--text3); font-family: monospace; margin-bottom: 3px; }
-    .shot-note { font-size: 12px; color: var(--text2); font-style: italic; }
-    .del-btn { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 16px; padding: 0 2px; line-height: 1; }
-
-    .empty { text-align: center; padding: 2.5rem 0; font-size: 13px; color: var(--text3); }
-
-    .install-banner {
-      display: none; margin: 0 0 10px; padding: 12px 14px;
-      background: var(--amber-bg); border: 0.5px solid var(--amber-border);
-      border-radius: var(--radius); font-size: 13px; color: var(--amber-text);
-      align-items: center; gap: 10px;
-    }
-    .install-banner.show { display: flex; }
-    .install-banner button {
-      font-family: inherit; font-size: 12px; padding: 5px 12px;
-      background: var(--amber-border); border: none; border-radius: var(--radius-sm);
-      color: #1a0e00; font-weight: 600; cursor: pointer; white-space: nowrap;
-    }
-    .install-banner .dismiss { background: none; border: none; color: var(--amber-text); cursor: pointer; font-size: 16px; margin-left: auto; padding: 0 4px; }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);}
+    .app{display:flex;flex-direction:column;height:100vh;height:100dvh;}
+    .topbar{background:var(--red-bg);padding:calc(14px + var(--safe-top)) 16px 12px;border-bottom:0.5px solid var(--red-border);flex-shrink:0;}
+    .topbar-row{display:flex;align-items:center;justify-content:space-between;}
+    .topbar-title{font-size:20px;font-weight:600;color:var(--text);}
+    .roll-input{font-family:inherit;font-size:13px;background:var(--bg2);border:0.5px solid var(--red-border);border-radius:var(--radius-pill);padding:6px 12px;color:var(--text);width:140px;}
+    .roll-input::placeholder{color:var(--text3);}
+    .scroll-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch;}
+    .card{background:var(--card);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px;}
+    .card-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;}
+    .frame-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .frame-circle{width:40px;height:40px;border-radius:50%;background:var(--bg3);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--text);flex-shrink:0;}
+    .frame-meta{font-size:13px;color:var(--text3);flex:1;}
+    .mic-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg3);cursor:pointer;font-size:13px;color:var(--text2);user-select:none;white-space:nowrap;}
+    .mic-btn.listening{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text);}
+    .mic-btn.done{background:var(--bg3);border-color:var(--border);color:var(--text2);}
+    .mic-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;}
+    .mic-btn.listening .mic-dot{background:var(--red-text);animation:pulse 0.8s infinite;}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+    .guided-panel{display:none;margin-top:8px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px;}
+    .guided-panel.show{display:block;}
+    .guided-step-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+    .guided-prompt{font-size:15px;color:var(--text);font-weight:500;margin-bottom:8px;}
+    .guided-heard{font-size:12px;color:var(--text2);font-style:italic;min-height:18px;margin-bottom:10px;}
+    .guided-actions{display:flex;gap:8px;flex-wrap:wrap;}
+    .guided-btn{font-family:inherit;font-size:12px;padding:6px 14px;border-radius:var(--radius-pill);cursor:pointer;border:0.5px solid var(--border);background:var(--bg2);color:var(--text2);}
+    .guided-btn.confirm{background:var(--green-bg);border-color:var(--green-border);color:var(--green-text);font-weight:500;}
+    .guided-btn.retry{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text);}
+    .guided-progress{display:flex;gap:5px;margin-bottom:10px;}
+    .guided-pip{width:24px;height:4px;border-radius:2px;background:var(--border);}
+    .guided-pip.active{background:var(--red-border);}
+    .guided-pip.done{background:var(--text3);opacity:0.5;}
+    .toggles-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+    .pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg3);cursor:pointer;user-select:none;}
+    .pill span{font-size:13px;color:var(--text2);}
+    .pill-icon{width:12px;height:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+    .dot-icon{width:7px;height:7px;border-radius:50%;background:var(--text3);}
+    .av-icon{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--text3);background:transparent;}
+    .tv-icon{width:11px;height:8px;border:1.5px solid var(--text3);border-radius:1px;background:transparent;}
+    .pill-de.on{background:var(--blue-bg);border-color:var(--blue-border);}
+    .pill-de.on span{color:var(--blue-text);font-weight:500;}
+    .pill-de.on .dot-icon{background:var(--blue-border);}
+    .pill-flash.on{background:var(--white-bg);border-color:var(--white-border);}
+    .pill-flash.on span{color:var(--white-text);font-weight:500;}
+    .pill-flash.on .dot-icon{background:var(--white-border);}
+    .pill-av.on{background:var(--yellow-bg);border-color:var(--yellow-border);}
+    .pill-av.on span{color:var(--yellow-text);font-weight:500;}
+    .pill-av.on .av-icon{border-color:var(--yellow-border);}
+    .pill-tv.on{background:var(--green-bg);border-color:var(--green-border);}
+    .pill-tv.on span{color:var(--green-text);font-weight:500;}
+    .pill-tv.on .tv-icon{border-color:var(--green-border);}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+    .field{display:flex;flex-direction:column;gap:5px;}
+    .field label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;}
+    select,input[type="text"],input[type="number"],textarea{font-family:inherit;font-size:14px;color:var(--text);background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;width:100%;appearance:none;-webkit-appearance:none;}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+    select option{background:#1a1a1a;color:#f0f0f0;}
+    select optgroup{background:#242424;color:#666666;}
+    input::placeholder,textarea::placeholder{color:var(--text3);}
+    textarea{resize:none;height:64px;}
+    .custom-input{display:none;margin-top:5px;}
+    .custom-input.show{display:block;}
+    .gps-row{display:flex;gap:8px;}
+    .gps-row input{flex:1;}
+    .gps-btn{font-family:inherit;font-size:12px;padding:0 14px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);cursor:pointer;white-space:nowrap;}
+    .fab-row{padding:12px 12px calc(12px + var(--safe-bottom));background:var(--red-bg);border-top:0.5px solid var(--red-border);display:flex;gap:10px;align-items:center;flex-shrink:0;}
+    .fab{flex:1;padding:14px;font-size:15px;font-weight:600;cursor:pointer;border-radius:var(--radius);font-family:inherit;background:var(--red-solid);border:none;color:#fff;}
+    .fab:active{opacity:0.85;}
+    .fab-secondary{flex:0 0 auto;padding:14px 16px;font-size:13px;cursor:pointer;border-radius:var(--radius);font-family:inherit;background:transparent;border:0.5px solid var(--red-border);color:var(--red-text);}
+    .shots-list{display:flex;flex-direction:column;gap:8px;}
+    .shot-card{background:var(--bg3);border-radius:var(--radius-sm);border:0.5px solid var(--border);padding:12px 14px;}
+    .shot-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+    .shot-num{font-size:13px;font-weight:500;color:var(--text);}
+    .shot-time{font-size:11px;color:var(--text3);}
+    .chip-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px;}
+    .chip{font-size:11px;padding:3px 8px;border-radius:var(--radius-pill);background:var(--chip-bg);border:0.5px solid var(--border);color:var(--text2);}
+    .chip-hi{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text);}
+    .shot-gps{font-size:10px;color:var(--text3);font-family:monospace;margin-bottom:3px;}
+    .shot-note{font-size:12px;color:var(--text2);font-style:italic;}
+    .del-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:0 2px;line-height:1;}
+    .empty{text-align:center;padding:2.5rem 0;font-size:13px;color:var(--text3);}
+    .install-banner{display:none;margin:0 0 10px;padding:12px 14px;background:var(--red-bg);border:0.5px solid var(--red-border);border-radius:var(--radius);font-size:13px;color:var(--red-text);align-items:center;gap:10px;}
+    .install-banner.show{display:flex;}
+    .install-banner button{font-family:inherit;font-size:12px;padding:5px 12px;background:var(--red-solid);border:none;border-radius:var(--radius-sm);color:#fff;font-weight:600;cursor:pointer;white-space:nowrap;}
+    .install-banner .dismiss{background:none;border:none;color:var(--red-text);cursor:pointer;font-size:16px;margin-left:auto;padding:0 4px;}
   </style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
     <div class="topbar-row">
-      <div>
-        <div class="topbar-title">Shot logger</div>
-        <div class="topbar-sub">Film photography field notes</div>
-      </div>
+      <div class="topbar-title">Shot logger</div>
       <input class="roll-input" id="rollName" type="text" placeholder="Roll name" />
     </div>
   </div>
-
   <div class="scroll-body">
-
     <div class="install-banner" id="installBanner">
       <span style="flex:1">Add to home screen for app experience</span>
       <button onclick="doInstall()">Install</button>
       <button class="dismiss" onclick="document.getElementById('installBanner').classList.remove('show')">✕</button>
     </div>
-
     <div class="card">
       <div class="frame-row">
         <div class="frame-circle" id="frameNum">1</div>
         <div class="frame-meta">Next frame</div>
-        <div class="mic-btn" id="micBtn" onclick="toggleMic()"><div class="mic-dot"></div><span id="micLabel">Dictate</span></div>
+        <div class="mic-btn" id="micBtn" onclick="startGuided()"><div class="mic-dot"></div><span id="micLabel">Dictate</span></div>
       </div>
-      <div class="voice-feedback" id="voiceFeedback"></div>
-
-      <div class="field" style="margin-bottom:12px;">
+      <div class="guided-panel" id="guidedPanel">
+        <div class="guided-progress" id="guidedProgress"></div>
+        <div class="guided-step-label" id="guidedStepLabel"></div>
+        <div class="guided-prompt" id="guidedPrompt"></div>
+        <div class="guided-heard" id="guidedHeard"></div>
+        <div class="guided-actions">
+          <button class="guided-btn confirm" id="guidedConfirm" onclick="confirmStep()">Confirm</button>
+          <button class="guided-btn retry" id="guidedRetry" onclick="retryStep()">Retry</button>
+          <button class="guided-btn" onclick="skipStep()">Skip</button>
+          <button class="guided-btn" style="margin-left:auto" onclick="cancelGuided()">Cancel</button>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:12px">
         <label>Film stock</label>
         <select id="filmStock" onchange="onStockChange()">
           <option value="">Select stock</option>
@@ -233,14 +178,12 @@
         </select>
         <input class="custom-input" id="filmStockCustom" type="text" placeholder="Enter film stock name" />
       </div>
-
       <div class="toggles-wrap">
-        <div class="pill" id="toggleDE" onclick="togglePill('DE')"><div class="pill-dot"></div><span>Double exposure</span></div>
-        <div class="pill" id="toggleFL" onclick="togglePill('FL')"><div class="pill-dot"></div><span>Flash</span></div>
-        <div class="pill" id="toggleAv" onclick="setMode('Av')"><div class="pill-dot"></div><span>Av</span></div>
-        <div class="pill on" id="toggleTv" onclick="setMode('Tv')"><div class="pill-dot"></div><span>Tv</span></div>
+        <div class="pill pill-de" id="toggleDE" onclick="togglePill('DE')"><div class="pill-icon"><div class="dot-icon"></div></div><span>Double exposure</span></div>
+        <div class="pill pill-flash" id="toggleFL" onclick="togglePill('FL')"><div class="pill-icon"><div class="dot-icon"></div></div><span>Flash</span></div>
+        <div class="pill pill-av" id="toggleAv" onclick="setMode('Av')"><div class="pill-icon"><div class="av-icon"></div></div><span>Av</span></div>
+        <div class="pill pill-tv on" id="toggleTv" onclick="setMode('Tv')"><div class="pill-icon"><div class="tv-icon"></div></div><span>Tv</span></div>
       </div>
-
       <div class="grid2">
         <div class="field">
           <label>Lens</label>
@@ -253,19 +196,14 @@
         </div>
         <div class="field">
           <label>ISO</label>
-          <select id="iso" onchange="onIsoChange()">
-            <option value="">Select stock first</option>
-          </select>
+          <select id="iso" onchange="onIsoChange()"><option value="">Select stock first</option></select>
           <input class="custom-input" id="isoCustom" type="number" placeholder="Enter ISO" />
         </div>
       </div>
-
       <div class="grid2">
         <div class="field">
           <label>Aperture</label>
-          <select id="aperture" onchange="onApertureChange()">
-            <option value="">Select lens first</option>
-          </select>
+          <select id="aperture" onchange="onApertureChange()"><option value="">Select lens first</option></select>
           <input class="custom-input" id="apertureCustom" type="text" placeholder="e.g. f/2" />
         </div>
         <div class="field">
@@ -281,337 +219,78 @@
           <input class="custom-input" id="shutterCustom" type="text" placeholder="e.g. 1/45" />
         </div>
       </div>
-
-      <div class="field" style="margin-bottom:10px;">
+      <div class="field" style="margin-bottom:10px">
         <label>GPS</label>
         <div class="gps-row">
           <input type="text" id="gpsInput" placeholder="Lat, Lng" />
           <button class="gps-btn" id="gpsBtn" onclick="getGPS()">Locate</button>
         </div>
       </div>
-
       <div class="field">
         <label>Notes</label>
         <textarea id="noteInput" placeholder="Light, subject, mood..."></textarea>
       </div>
     </div>
-
-    <div class="card" id="shotsCard" style="display:none;">
+    <div class="card" id="shotsCard" style="display:none">
       <div class="card-label" id="shotCount">0 frames</div>
       <div class="shots-list" id="shotList"></div>
     </div>
-
     <div class="empty" id="emptyState">No frames logged yet — shoot something!</div>
   </div>
-
   <div class="fab-row">
     <button class="fab-secondary" onclick="exportCSV()">Export CSV</button>
     <button class="fab" onclick="logShot()">Log frame</button>
   </div>
 </div>
-
 <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  }
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').classList.add('show');});
+function doInstall(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('installBanner').classList.remove('show');});}
 
-  let deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('installBanner').classList.add('show');
-  });
-  function doInstall() {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      deferredPrompt = null;
-      document.getElementById('installBanner').classList.remove('show');
-    });
-  }
-
-  let shots = [], frameCounter = 1;
-  let state = { DE: false, FL: false, mode: 'Tv' };
-  let recognition = null, isListening = false;
-
-  const STORAGE_KEY = 'shotlogger_shots';
-  const FRAME_KEY = 'shotlogger_frame';
-
-  function saveData() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(shots));
-      localStorage.setItem(FRAME_KEY, frameCounter);
-    } catch(e) {}
-  }
-
-  function loadData() {
-    try {
-      const s = localStorage.getItem(STORAGE_KEY);
-      const f = localStorage.getItem(FRAME_KEY);
-      if (s) shots = JSON.parse(s);
-      if (f) frameCounter = parseInt(f);
-      document.getElementById('frameNum').textContent = frameCounter;
-      renderShots();
-    } catch(e) {}
-  }
-
-  const apertureMap = {
-    '50mm': ['f/1.8','f/2.8','f/3.5','f/4','f/5.6','f/8','f/11','f/16'],
-    '28-85mm': ['f/3.5','f/4','f/5.6','f/8','f/11','f/16','f/22'],
-    '80-200mm': ['f/4','f/5.6','f/8','f/11','f/16','f/22'],
-    '100-300mm': ['f/5.6','f/8','f/11','f/16','f/22','f/32']
-  };
-
-  const stockIsoMap = {
-    'ColorPlus 200':[200],'Ektar 100':[100],'Gold 200':[200],'Portra 160':[160],
-    'Portra 400':[400],'Portra 800':[800],'T-Max 100':[100],'T-Max 400':[400],
-    'T-Max P3200':[3200],'Tri-X 400':[400],'UltraMax 400':[400],
-    'Delta 100':[100],'Delta 400':[400],'Delta 3200':[3200],'FP4 Plus 125':[125],
-    'HP5 Plus 400':[400],'Ortho Plus 80':[80],'Pan F Plus 50':[50],'XP2 Super 400':[400],
-    '50D':[50],'400D':[400],'800T':[800],'Double-X':[250],
-    'Acros II 100':[100],'Neopan 400':[400],'Pro 160NS':[160],'Pro 400H':[400],
-    'Provia 100F':[100],'Superia 100':[100],'Superia 200':[200],'Superia 400':[400],
-    'Superia 800':[800],'Velvia 50':[50],'Velvia 100':[100],
-    'Berlin Kino 400':[400],'Color Negative 100':[100],'Color Negative 200':[200],
-    'Color Negative 400':[400],'Color Negative 800':[800],'Lady Grey 400':[400],
-    'LomoChrome Metropolis 100-400':[100,200,400],'LomoChrome Purple 100-400':[100,200,400],
-    'Potsdam Kino 100':[100]
-  };
-
-  function showCustom(selId, custId) {
-    const s = document.getElementById(selId), i = document.getElementById(custId);
-    if (s.value === 'Custom') { i.classList.add('show'); i.focus(); }
-    else { i.classList.remove('show'); i.value = ''; }
-  }
-
-  function onStockChange() { showCustom('filmStock','filmStockCustom'); updateIsos(); }
-  function onLensChange() { showCustom('lens','lensCustom'); updateApertures(); }
-  function onIsoChange() { showCustom('iso','isoCustom'); }
-  function onApertureChange() { showCustom('aperture','apertureCustom'); }
-  function onShutterChange() { showCustom('shutter','shutterCustom'); }
-
-  function updateIsos() {
-    const stock = document.getElementById('filmStock').value;
-    const sel = document.getElementById('iso');
-    document.getElementById('isoCustom').classList.remove('show');
-    if (!stock || stock === 'Custom' || !stockIsoMap[stock]) {
-      sel.innerHTML = '<option value="">Select stock first</option><option value="Custom">Custom</option>';
-      return;
-    }
-    const isos = stockIsoMap[stock];
-    sel.innerHTML = isos.map(v => `<option value="${v}">${v}</option>`).join('') + '<option value="Custom">Custom</option>';
-    sel.value = String(isos[isos.length - 1]);
-  }
-
-  function updateApertures() {
-    const lens = document.getElementById('lens').value;
-    const sel = document.getElementById('aperture');
-    document.getElementById('apertureCustom').classList.remove('show');
-    if (!lens || lens === 'Custom' || !apertureMap[lens]) {
-      sel.innerHTML = '<option value="">Select lens first</option><option value="Custom">Custom</option>';
-      return;
-    }
-    sel.innerHTML = '<option value="">f/stop</option>' +
-      apertureMap[lens].map(a => `<option>${a}</option>`).join('') +
-      '<option value="Custom">Custom</option>';
-  }
-
-  function getFieldValue(selId, custId) {
-    const s = document.getElementById(selId);
-    if (s.value === 'Custom') return document.getElementById(custId).value.trim() || 'Custom';
-    return s.value;
-  }
-
-  function togglePill(k) {
-    state[k] = !state[k];
-    document.getElementById('toggle'+k).classList.toggle('on', state[k]);
-  }
-
-  function setMode(m) {
-    state.mode = m;
-    document.getElementById('toggleAv').classList.toggle('on', m==='Av');
-    document.getElementById('toggleTv').classList.toggle('on', m==='Tv');
-  }
-
-  function setFeedback(msg, clear) {
-    const el = document.getElementById('voiceFeedback');
-    el.textContent = msg;
-    if (clear) setTimeout(() => { el.textContent = ''; }, 3500);
-  }
-
-  function getGPS(fromVoice) {
-    const btn = document.getElementById('gpsBtn');
-    btn.textContent = '...'; btn.disabled = true;
-    if (fromVoice) setFeedback('Locating...', false);
-    if (!navigator.geolocation) {
-      document.getElementById('gpsInput').value = 'Not supported';
-      btn.textContent = 'Locate'; btn.disabled = false;
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(p => {
-      document.getElementById('gpsInput').value = p.coords.latitude.toFixed(5) + ', ' + p.coords.longitude.toFixed(5);
-      btn.textContent = 'Locate'; btn.disabled = false;
-      if (fromVoice) setFeedback('Set: location captured', true);
-    }, () => {
-      document.getElementById('gpsInput').value = 'Permission denied';
-      btn.textContent = 'Locate'; btn.disabled = false;
-      if (fromVoice) setFeedback('GPS permission denied.', true);
-    });
-  }
-
-  function toggleMic() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { setFeedback('Not supported in this browser.', true); return; }
-    if (isListening) { recognition.stop(); return; }
-    recognition = new SR();
-    recognition.lang = 'en-AU'; recognition.interimResults = true; recognition.maxAlternatives = 1;
-    recognition.onstart = () => {
-      isListening = true;
-      document.getElementById('micBtn').classList.add('listening');
-      document.getElementById('micLabel').textContent = 'Listening...';
-      setFeedback('Speak now — try "locate me" for GPS');
-    };
-    recognition.onresult = (e) => {
-      const t = Array.from(e.results).map(r => r[0].transcript).join(' ').toLowerCase();
-      if (e.results[e.results.length-1].isFinal) { setFeedback('Heard: "' + t + '"', false); parseVoice(t); }
-      else setFeedback('Hearing: "' + t + '"...');
-    };
-    recognition.onerror = (e) => { setFeedback('Mic error: ' + e.error, true); stopMic(); };
-    recognition.onend = () => stopMic();
-    recognition.start();
-  }
-
-  function stopMic() {
-    isListening = false;
-    document.getElementById('micBtn').classList.remove('listening');
-    document.getElementById('micLabel').textContent = 'Dictate';
-  }
-
-  function setSelVal(id, value) {
-    const sel = document.getElementById(id);
-    for (let o of sel.options) {
-      if (o.value.toLowerCase() === value.toLowerCase() || o.text.toLowerCase() === value.toLowerCase()) {
-        sel.value = o.value; return true;
-      }
-    }
-    return false;
-  }
-
-  function parseVoice(t) {
-    const matched = [];
-    const gpsTriggered = ['locate me','get location','gps','capture location','my location','current location','where am i'].some(k => t.includes(k));
-    if (gpsTriggered) { getGPS(true); matched.push('GPS triggered'); }
-
-    const stocks = [
-      ['colorplus','ColorPlus 200'],['ektar','Ektar 100'],['gold 200','Gold 200'],
-      ['portra 160','Portra 160'],['portra 400','Portra 400'],['portra 800','Portra 800'],
-      ['tmax 100','T-Max 100'],['t-max 100','T-Max 100'],['tmax 400','T-Max 400'],['t-max 400','T-Max 400'],
-      ['p3200','T-Max P3200'],['tri-x','Tri-X 400'],['tri x','Tri-X 400'],['ultramax','UltraMax 400'],
-      ['delta 100','Delta 100'],['delta 400','Delta 400'],['delta 3200','Delta 3200'],
-      ['fp4','FP4 Plus 125'],['hp5','HP5 Plus 400'],['ortho','Ortho Plus 80'],['pan f','Pan F Plus 50'],['xp2','XP2 Super 400'],
-      ['cinestill 50','50D'],['50d','50D'],['400d','400D'],['cinestill 400','400D'],
-      ['cinestill 800','800T'],['800t','800T'],['double-x','Double-X'],['double x','Double-X'],
-      ['acros','Acros II 100'],['neopan','Neopan 400'],['pro 160','Pro 160NS'],['pro 400h','Pro 400H'],
-      ['provia','Provia 100F'],['superia 100','Superia 100'],['superia 200','Superia 200'],
-      ['superia 400','Superia 400'],['superia 800','Superia 800'],['velvia 50','Velvia 50'],['velvia 100','Velvia 100'],
-      ['berlin','Berlin Kino 400'],['color negative 100','Color Negative 100'],['color negative 200','Color Negative 200'],
-      ['color negative 400','Color Negative 400'],['color negative 800','Color Negative 800'],
-      ['lady grey','Lady Grey 400'],['metropolis','LomoChrome Metropolis 100-400'],
-      ['lomochrome purple','LomoChrome Purple 100-400'],['purple','LomoChrome Purple 100-400'],['potsdam','Potsdam Kino 100'],
-    ];
-    for (const [k,v] of stocks) {
-      if (t.includes(k)) { setSelVal('filmStock',v); document.getElementById('filmStockCustom').classList.remove('show'); updateIsos(); matched.push('stock: '+v); break; }
-    }
-
-    const lenses = [['50mm','50mm'],['50','50mm'],['28 85','28-85mm'],['28-85','28-85mm'],['80 200','80-200mm'],['80-200','80-200mm'],['100 300','100-300mm'],['100-300','100-300mm']];
-    for (const [k,v] of lenses) {
-      if (t.includes(k)) { document.getElementById('lens').value=v; updateApertures(); matched.push('lens: '+v); break; }
-    }
-
-    const isoM = t.match(/iso\s*(\d+)/);
-    if (isoM && setSelVal('iso', isoM[1])) matched.push('ISO: '+isoM[1]);
-
-    const apM = t.match(/f[\s\/]?(\d+(?:[.,]\d+)?)/);
-    if (apM) { const v='f/'+apM[1].replace(',','.'); if (setSelVal('aperture',v)) matched.push('aperture: '+v); }
-
-    const fracM = t.match(/1[\s\/over]+(\d+)/);
-    if (fracM) { const v='1/'+fracM[1]; if (setSelVal('shutter',v)) matched.push('shutter: '+v); }
-    else {
-      const secM = t.match(/(\d+)\s*(?:second|sec|s\b)/);
-      if (secM) { const v=secM[1]+'s'; if (setSelVal('shutter',v)) matched.push('shutter: '+v); }
-      else if (t.includes('bulb') && setSelVal('shutter','Bulb')) matched.push('shutter: Bulb');
-    }
-
-    if (t.includes('flash on') || (t.includes('flash') && !t.includes('flash off'))) { state.FL=true; document.getElementById('toggleFL').classList.add('on'); matched.push('flash on'); }
-    if (t.includes('flash off')) { state.FL=false; document.getElementById('toggleFL').classList.remove('on'); }
-    if (t.includes('double exposure') || t.includes('double exp')) { state.DE=true; document.getElementById('toggleDE').classList.add('on'); matched.push('double exposure'); }
-    if (t.match(/\bav\b/) || t.includes('aperture priority')) { setMode('Av'); matched.push('mode: Av'); }
-    if (t.match(/\btv\b/) || t.includes('shutter priority')) { setMode('Tv'); matched.push('mode: Tv'); }
-
-    const noteM = t.match(/notes?\s+(.+)$/);
-    if (noteM) { document.getElementById('noteInput').value=noteM[1].trim(); matched.push('note added'); }
-
-    if (!gpsTriggered) setFeedback(matched.length ? 'Set: '+matched.join(', ') : 'Nothing recognised', true);
-  }
-
-  function logShot() {
-    const now = new Date();
-    shots.unshift({
-      id: Date.now(), frame: frameCounter,
-      stock: getFieldValue('filmStock','filmStockCustom'),
-      lens: getFieldValue('lens','lensCustom'),
-      iso: getFieldValue('iso','isoCustom'),
-      aperture: getFieldValue('aperture','apertureCustom'),
-      shutter: getFieldValue('shutter','shutterCustom'),
-      gps: document.getElementById('gpsInput').value,
-      note: document.getElementById('noteInput').value,
-      time: now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
-      date: now.toLocaleDateString([],{month:'short',day:'numeric'}),
-      roll: document.getElementById('rollName').value || 'Unnamed roll',
-      de: state.DE, flash: state.FL, mode: state.mode
-    });
-    frameCounter++;
-    document.getElementById('frameNum').textContent = frameCounter;
-    document.getElementById('noteInput').value = '';
-    state.DE=false; state.FL=false;
-    ['toggleDE','toggleFL'].forEach(id => document.getElementById(id).classList.remove('on'));
-    setFeedback('');
-    saveData();
-    renderShots();
-  }
-
-  function deleteShot(id) { shots=shots.filter(s=>s.id!==id); saveData(); renderShots(); }
-
-  function renderShots() {
-    const list=document.getElementById('shotList'), card=document.getElementById('shotsCard'), empty=document.getElementById('emptyState');
-    document.getElementById('shotCount').textContent=shots.length+(shots.length===1?' frame':' frames')+' logged';
-    if (!shots.length) { card.style.display='none'; empty.style.display='block'; return; }
-    card.style.display='block'; empty.style.display='none';
-    list.innerHTML = shots.map(s => {
-      const chips=[s.stock,s.lens,s.iso?'ISO '+s.iso:'',s.aperture,s.shutter,s.mode].filter(Boolean);
-      const hi=[s.de?'Double exp':'',s.flash?'Flash':''].filter(Boolean);
-      return `<div class="shot-card">
-        <div class="shot-head"><span class="shot-num">Frame ${s.frame} · ${s.roll}</span>
-        <div style="display:flex;align-items:center;gap:8px;"><span class="shot-time">${s.date} · ${s.time}</span>
-        <button class="del-btn" onclick="deleteShot(${s.id})">✕</button></div></div>
-        <div class="chip-row">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}${hi.map(c=>`<span class="chip chip-hi">${c}</span>`).join('')}</div>
-        ${s.gps?`<div class="shot-gps">${s.gps}</div>`:''}
-        ${s.note?`<div class="shot-note">${s.note}</div>`:''}
-      </div>`;
-    }).join('');
-  }
-
-  function exportCSV() {
-    if (!shots.length) return;
-    const h=['Frame','Date','Time','Roll','Stock','Lens','ISO','Aperture','Shutter','Mode','Double Exp','Flash','GPS','Notes'];
-    const r=shots.map(s=>[s.frame,s.date,s.time,s.roll,s.stock,s.lens,s.iso,s.aperture,s.shutter,s.mode,s.de?'Yes':'No',s.flash?'Yes':'No',s.gps,'"'+(s.note||'').replace(/"/g,'""')+'"'].join(','));
-    const csv=[h.join(','),...r].join('\n');
-    const blob=new Blob([csv],{type:'text/csv'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-    a.download=(document.getElementById('rollName').value||'film-log')+'.csv'; a.click();
-  }
-
-  loadData();
+let shots=[],frameCounter=1,state={DE:false,FL:false,mode:'Tv'},recognition=null;
+const STEPS=[
+  {key:'aperture',label:'Step 1 of 3 — Aperture',prompt:'Say your aperture',hint:'e.g. "f8", "five point six", "f 2.8"'},
+  {key:'shutter',label:'Step 2 of 3 — Shutter',prompt:'Say your shutter speed',hint:'e.g. "125", "one over 60", "2 seconds", "bulb"'},
+  {key:'notes',label:'Step 3 of 3 — Notes',prompt:'Say your notes, or skip',hint:'Light, subject, mood...'}
+];
+let guidedStep=-1,guidedHeard='',guidedParsed='';
+const SK='shotlogger_shots',FK='shotlogger_frame';
+function saveData(){try{localStorage.setItem(SK,JSON.stringify(shots));localStorage.setItem(FK,frameCounter);}catch(e){}}
+function loadData(){try{const s=localStorage.getItem(SK),f=localStorage.getItem(FK);if(s)shots=JSON.parse(s);if(f)frameCounter=parseInt(f);document.getElementById('frameNum').textContent=frameCounter;renderShots();}catch(e){}}
+const apertureMap={'50mm':['f/1.8','f/2.8','f/3.5','f/4','f/5.6','f/8','f/11','f/16'],'28-85mm':['f/3.5','f/4','f/5.6','f/8','f/11','f/16','f/22'],'80-200mm':['f/4','f/5.6','f/8','f/11','f/16','f/22'],'100-300mm':['f/5.6','f/8','f/11','f/16','f/22','f/32']};
+const stockIsoMap={'ColorPlus 200':[200],'Ektar 100':[100],'Gold 200':[200],'Portra 160':[160],'Portra 400':[400],'Portra 800':[800],'T-Max 100':[100],'T-Max 400':[400],'T-Max P3200':[3200],'Tri-X 400':[400],'UltraMax 400':[400],'Delta 100':[100],'Delta 400':[400],'Delta 3200':[3200],'FP4 Plus 125':[125],'HP5 Plus 400':[400],'Ortho Plus 80':[80],'Pan F Plus 50':[50],'XP2 Super 400':[400],'50D':[50],'400D':[400],'800T':[800],'Double-X':[250],'Acros II 100':[100],'Neopan 400':[400],'Pro 160NS':[160],'Pro 400H':[400],'Provia 100F':[100],'Superia 100':[100],'Superia 200':[200],'Superia 400':[400],'Superia 800':[800],'Velvia 50':[50],'Velvia 100':[100],'Berlin Kino 400':[400],'Color Negative 100':[100],'Color Negative 200':[200],'Color Negative 400':[400],'Color Negative 800':[800],'Lady Grey 400':[400],'LomoChrome Metropolis 100-400':[100,200,400],'LomoChrome Purple 100-400':[100,200,400],'Potsdam Kino 100':[100]};
+function showCustom(s,c){const el=document.getElementById(s),i=document.getElementById(c);if(el.value==='Custom'){i.classList.add('show');i.focus();}else{i.classList.remove('show');i.value='';}}
+function onStockChange(){showCustom('filmStock','filmStockCustom');updateIsos();}
+function onLensChange(){showCustom('lens','lensCustom');updateApertures();}
+function onIsoChange(){showCustom('iso','isoCustom');}
+function onApertureChange(){showCustom('aperture','apertureCustom');}
+function onShutterChange(){showCustom('shutter','shutterCustom');}
+function updateIsos(){const stock=document.getElementById('filmStock').value,sel=document.getElementById('iso');document.getElementById('isoCustom').classList.remove('show');if(!stock||stock==='Custom'||!stockIsoMap[stock]){sel.innerHTML='<option value="">Select stock first</option><option value="Custom">Custom</option>';return;}const isos=stockIsoMap[stock];sel.innerHTML=isos.map(v=>`<option value="${v}">${v}</option>`).join('')+'<option value="Custom">Custom</option>';sel.value=String(isos[isos.length-1]);}
+function updateApertures(){const lens=document.getElementById('lens').value,sel=document.getElementById('aperture');document.getElementById('apertureCustom').classList.remove('show');if(!lens||lens==='Custom'||!apertureMap[lens]){sel.innerHTML='<option value="">Select lens first</option><option value="Custom">Custom</option>';return;}sel.innerHTML='<option value="">f/stop</option>'+apertureMap[lens].map(a=>`<option>${a}</option>`).join('')+'<option value="Custom">Custom</option>';}
+function getFieldValue(s,c){const el=document.getElementById(s);if(el.value==='Custom')return document.getElementById(c).value.trim()||'Custom';return el.value;}
+function setSelVal(id,value){const sel=document.getElementById(id);for(let o of sel.options){if(o.value.toLowerCase()===value.toLowerCase()||o.text.toLowerCase()===value.toLowerCase()){sel.value=o.value;return true;}}return false;}
+function togglePill(k){state[k]=!state[k];document.getElementById('toggle'+k).classList.toggle('on',state[k]);}
+function setMode(m){state.mode=m;document.getElementById('toggleAv').classList.toggle('on',m==='Av');document.getElementById('toggleTv').classList.toggle('on',m==='Tv');}
+function getGPS(){const btn=document.getElementById('gpsBtn');btn.textContent='...';btn.disabled=true;if(!navigator.geolocation){document.getElementById('gpsInput').value='Not supported';btn.textContent='Locate';btn.disabled=false;return;}navigator.geolocation.getCurrentPosition(p=>{document.getElementById('gpsInput').value=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);btn.textContent='Locate';btn.disabled=false;},()=>{document.getElementById('gpsInput').value='Permission denied';btn.textContent='Locate';btn.disabled=false;});}
+function startGuided(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('Speech recognition not supported. Try Chrome or Edge.');return;}guidedStep=0;showGuidedPanel();listenForStep();}
+function showGuidedPanel(){const step=STEPS[guidedStep];document.getElementById('guidedPanel').classList.add('show');document.getElementById('guidedStepLabel').textContent=step.label;document.getElementById('guidedPrompt').textContent=step.prompt;document.getElementById('guidedHeard').textContent=step.hint;document.getElementById('guidedConfirm').style.display='none';document.getElementById('guidedRetry').style.display='none';updatePips();const btn=document.getElementById('micBtn');btn.classList.add('listening');btn.classList.remove('done');document.getElementById('micLabel').textContent='Listening...';}
+function updatePips(){document.getElementById('guidedProgress').innerHTML=STEPS.map((_,i)=>{let c='guided-pip';if(i<guidedStep)c+=' done';else if(i===guidedStep)c+=' active';return`<div class="${c}"></div>`;}).join('');}
+function listenForStep(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;recognition=new SR();recognition.lang='en-AU';recognition.interimResults=true;recognition.maxAlternatives=3;recognition.onresult=(e)=>{const interim=Array.from(e.results).map(r=>r[0].transcript).join(' ').toLowerCase();document.getElementById('guidedHeard').textContent='Hearing: "'+interim+'"...';if(e.results[e.results.length-1].isFinal){const alts=[];for(let r of e.results)for(let i=0;i<r.length;i++)alts.push(r[i].transcript.toLowerCase());guidedHeard=alts[0];if(handleSideChannel(guidedHeard))return;guidedParsed=parseStep(guidedStep,alts);if(guidedParsed){document.getElementById('guidedHeard').textContent='Heard: "'+guidedHeard+'" \u2192 '+guidedParsed;document.getElementById('guidedConfirm').style.display='';document.getElementById('guidedRetry').style.display='';}else{document.getElementById('guidedHeard').textContent='Couldn\'t match "'+guidedHeard+'" \u2014 retry or skip';document.getElementById('guidedRetry').style.display='';document.getElementById('guidedConfirm').style.display='none';}setMicIdle();}};recognition.onerror=()=>{document.getElementById('guidedHeard').textContent='Mic error \u2014 tap Retry';document.getElementById('guidedRetry').style.display='';setMicIdle();};recognition.onend=()=>setMicIdle();recognition.start();}
+function handleSideChannel(t){const gps=['locate me','get location','my location','current location','where am i','get gps'].some(k=>t.includes(k));if(gps){getGPS();document.getElementById('guidedHeard').textContent='Locating GPS \u2014 continue when ready';setMicIdle();return true;}if(t.includes('flash on')||(t.includes('flash')&&!t.includes('flash off'))){state.FL=true;document.getElementById('toggleFL').classList.add('on');document.getElementById('guidedHeard').textContent='Flash on \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}if(t.includes('flash off')){state.FL=false;document.getElementById('toggleFL').classList.remove('on');document.getElementById('guidedHeard').textContent='Flash off \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}if(t.includes('double exposure')||t.includes('double exp')){state.DE=!state.DE;document.getElementById('toggleDE').classList.toggle('on',state.DE);document.getElementById('guidedHeard').textContent='Double exposure '+(state.DE?'on':'off')+' \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}if(t.match(/\bav\b/)||t.includes('aperture priority')){setMode('Av');document.getElementById('guidedHeard').textContent='Mode set to Av \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}if(t.match(/\btv\b/)||t.includes('shutter priority')){setMode('Tv');document.getElementById('guidedHeard').textContent='Mode set to Tv \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}return false;}
+function setMicIdle(){const btn=document.getElementById('micBtn');btn.classList.remove('listening');btn.classList.add('done');document.getElementById('micLabel').textContent='Dictating...';}
+function parseStep(idx,alts){const key=STEPS[idx].key;if(key==='aperture'){for(const t of alts){let m=t.match(/f[\s\/]?(\d+(?:[.,]\d+)?)/);if(m)return 'f/'+m[1].replace(',','.');const wm={'one point eight':'1.8','two point eight':'2.8','three point five':'3.5','four':'4','five point six':'5.6','eight':'8','eleven':'11','sixteen':'16','twenty two':'22','thirty two':'32','1.8':'1.8','2.8':'2.8','3.5':'3.5','5.6':'5.6'};for(const[w,v]of Object.entries(wm))if(t.includes(w))return 'f/'+v;}return null;}if(key==='shutter'){for(const t of alts){if(t.includes('bulb'))return 'Bulb';const sw={'one':'1','two':'2','four':'4','eight':'8','fifteen':'15','thirty':'30'};for(const[w,n]of Object.entries(sw))if(t.includes(w+' second')||t.includes(w+'s ')||t===w)return n+'s';let sm=t.match(/(\d+)\s*(?:second|sec)/);if(sm)return sm[1]+'s';let fm=t.match(/1[\s\/over]+(\d+)/);if(fm)return '1/'+fm[1];let nm=t.match(/^(\d+)$/);if(nm){const v='1/'+nm[1];if(['1/1000','1/500','1/250','1/125','1/60','1/30','1/15','1/8','1/4','1/2'].includes(v))return v;}const sv={'one thousand':'1/1000','five hundred':'1/500','two fifty':'1/250','two hundred fifty':'1/250','one twenty five':'1/125','sixty':'1/60','thirty':'1/30','fifteen':'1/15','eight':'1/8','quarter':'1/4','half':'1/2'};for(const[w,v]of Object.entries(sv))if(t.includes(w))return v;}return null;}if(key==='notes'){const t=alts[0].trim();return t.length>1?t:null;}return null;}
+function applyStep(idx,value){const key=STEPS[idx].key;if(key==='aperture'){if(!setSelVal('aperture',value)){document.getElementById('aperture').value='Custom';document.getElementById('apertureCustom').classList.add('show');document.getElementById('apertureCustom').value=value;}}else if(key==='shutter'){if(!setSelVal('shutter',value)){document.getElementById('shutter').value='Custom';document.getElementById('shutterCustom').classList.add('show');document.getElementById('shutterCustom').value=value;}}else if(key==='notes'){document.getElementById('noteInput').value=value;}}
+function confirmStep(){applyStep(guidedStep,guidedParsed);guidedStep++;guidedStep>=STEPS.length?finishGuided():(showGuidedPanel(),listenForStep());}
+function retryStep(){document.getElementById('guidedConfirm').style.display='none';document.getElementById('guidedRetry').style.display='none';document.getElementById('guidedHeard').textContent=STEPS[guidedStep].hint;const btn=document.getElementById('micBtn');btn.classList.add('listening');btn.classList.remove('done');document.getElementById('micLabel').textContent='Listening...';listenForStep();}
+function skipStep(){guidedStep++;guidedStep>=STEPS.length?finishGuided():(showGuidedPanel(),listenForStep());}
+function finishGuided(){document.getElementById('guidedPanel').classList.remove('show');const btn=document.getElementById('micBtn');btn.classList.remove('listening','done');document.getElementById('micLabel').textContent='Dictate';guidedStep=-1;if(recognition){try{recognition.stop();}catch(e){}recognition=null;}}
+function cancelGuided(){finishGuided();}
+function logShot(){const now=new Date();shots.unshift({id:Date.now(),frame:frameCounter,stock:getFieldValue('filmStock','filmStockCustom'),lens:getFieldValue('lens','lensCustom'),iso:getFieldValue('iso','isoCustom'),aperture:getFieldValue('aperture','apertureCustom'),shutter:getFieldValue('shutter','shutterCustom'),gps:document.getElementById('gpsInput').value,note:document.getElementById('noteInput').value,time:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),date:now.toLocaleDateString([],{month:'short',day:'numeric'}),roll:document.getElementById('rollName').value||'Unnamed roll',de:state.DE,flash:state.FL,mode:state.mode});frameCounter++;document.getElementById('frameNum').textContent=frameCounter;document.getElementById('noteInput').value='';state.DE=false;state.FL=false;['toggleDE','toggleFL'].forEach(id=>document.getElementById(id).classList.remove('on'));saveData();renderShots();}
+function deleteShot(id){shots=shots.filter(s=>s.id!==id);saveData();renderShots();}
+function renderShots(){const list=document.getElementById('shotList'),card=document.getElementById('shotsCard'),empty=document.getElementById('emptyState');document.getElementById('shotCount').textContent=shots.length+(shots.length===1?' frame':' frames')+' logged';if(!shots.length){card.style.display='none';empty.style.display='block';return;}card.style.display='block';empty.style.display='none';list.innerHTML=shots.map(s=>{const chips=[s.stock,s.lens,s.iso?'ISO '+s.iso:'',s.aperture,s.shutter,s.mode].filter(Boolean);const hi=[s.de?'Double exp':'',s.flash?'Flash':''].filter(Boolean);return`<div class="shot-card"><div class="shot-head"><span class="shot-num">Frame ${s.frame} \u00b7 ${s.roll}</span><div style="display:flex;align-items:center;gap:8px"><span class="shot-time">${s.date} \u00b7 ${s.time}</span><button class="del-btn" onclick="deleteShot(${s.id})">&#x2715;</button></div></div><div class="chip-row">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}${hi.map(c=>`<span class="chip chip-hi">${c}</span>`).join('')}</div>${s.gps?`<div class="shot-gps">${s.gps}</div>`:''}${s.note?`<div class="shot-note">${s.note}</div>`:''}</div>`;}).join('');}
+function exportCSV(){if(!shots.length)return;const h=['Frame','Date','Time','Roll','Stock','Lens','ISO','Aperture','Shutter','Mode','Double Exp','Flash','GPS','Notes'];const r=shots.map(s=>[s.frame,s.date,s.time,s.roll,s.stock,s.lens,s.iso,s.aperture,s.shutter,s.mode,s.de?'Yes':'No',s.flash?'Yes':'No',s.gps,'"'+(s.note||'').replace(/"/g,'""')+'"'].join(','));const blob=new Blob([[h.join(','),...r].join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(document.getElementById('rollName').value||'film-log')+'.csv';a.click();}
+loadData();
 </script>
 </body>
 </html>
