@@ -20,7 +20,7 @@
   --yellow-bg:#3d3000;--yellow-border:#D4AC0D;--yellow-text:#F4D03F;
   --green-bg:#0f3d1f;--green-border:#1E8449;--green-text:#27AE60;
   --blue-bg:#0f2540;--blue-border:#2980B9;--blue-text:#5DADE2;
-  --white-bg:#4a4a4a;--white-border:#cccccc;--white-text:#ffffff;
+  --white-bg:#e8e8e8;--white-border:#ffffff;--white-text:#111111;
   --chip-bg:#3a3a3a;--radius:12px;--radius-sm:8px;--radius-pill:20px;
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
 }
@@ -41,10 +41,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
 .frame-meta{font-size:13px;color:var(--text3);flex:1;}
 .mic-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg4);cursor:pointer;font-size:13px;color:var(--text2);user-select:none;white-space:nowrap;}
 .mic-btn.listening{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text);}
-.mic-btn.done{background:var(--bg4);border-color:var(--border);color:var(--text2);}
 .mic-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;}
 .mic-btn.listening .mic-dot{background:var(--red-text);animation:pulse 0.8s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.voice-feedback{font-size:11px;color:var(--text3);margin-top:6px;min-height:15px;font-style:italic;}
 .modal-overlay{display:none;position:absolute;inset:0;background:rgba(0,0,0,0.55);z-index:99;}
 .modal-overlay.show{display:block;}
 .reset-modal{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--radius);padding:20px;z-index:100;width:220px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.5);}
@@ -54,19 +54,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-sy
 .reset-modal-btns{display:flex;gap:8px;}
 .reset-yes{flex:1;font-family:inherit;font-size:13px;padding:8px;border-radius:var(--radius-sm);background:var(--red-solid);border:none;color:#fff;cursor:pointer;font-weight:500;}
 .reset-no{flex:1;font-family:inherit;font-size:13px;padding:8px;border-radius:var(--radius-sm);background:var(--bg4);border:0.5px solid var(--border);color:var(--text2);cursor:pointer;}
-.guided-panel{display:none;margin-top:8px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px;}
-.guided-panel.show{display:block;}
-.guided-step-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
-.guided-prompt{font-size:15px;color:var(--text);font-weight:500;margin-bottom:8px;}
-.guided-heard{font-size:12px;color:var(--text2);font-style:italic;min-height:18px;margin-bottom:10px;}
-.guided-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.guided-btn{font-family:inherit;font-size:12px;padding:6px 14px;border-radius:var(--radius-pill);cursor:pointer;border:0.5px solid var(--border);background:var(--bg4);color:var(--text2);}
-.guided-btn.confirm{background:var(--green-bg);border-color:var(--green-border);color:var(--green-text);font-weight:500;}
-.guided-btn.retry{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text);}
-.guided-progress{display:flex;gap:5px;margin-bottom:10px;}
-.guided-pip{width:24px;height:4px;border-radius:2px;background:var(--border);}
-.guided-pip.active{background:var(--red-border);}
-.guided-pip.done{background:var(--text3);opacity:0.5;}
 .toggles-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
 .pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg4);cursor:pointer;user-select:none;}
 .pill span{font-size:13px;color:var(--text2);}
@@ -149,20 +136,9 @@ textarea{resize:none;height:64px;}
       <div class="frame-row">
         <div class="frame-circle" id="frameNum" onclick="openReset()" title="Tap to reset">1</div>
         <div class="frame-meta">Next frame &middot; tap to reset</div>
-        <div class="mic-btn" id="micBtn" onclick="startGuided()"><div class="mic-dot"></div><span id="micLabel">Dictate</span></div>
+        <div class="mic-btn" id="micBtn" onclick="toggleMic()"><div class="mic-dot"></div><span id="micLabel">Dictate</span></div>
       </div>
-      <div class="guided-panel" id="guidedPanel">
-        <div class="guided-progress" id="guidedProgress"></div>
-        <div class="guided-step-label" id="guidedStepLabel"></div>
-        <div class="guided-prompt" id="guidedPrompt"></div>
-        <div class="guided-heard" id="guidedHeard"></div>
-        <div class="guided-actions">
-          <button class="guided-btn confirm" id="guidedConfirm" onclick="confirmStep()">Confirm</button>
-          <button class="guided-btn retry" id="guidedRetry" onclick="retryStep()">Retry</button>
-          <button class="guided-btn" onclick="skipStep()">Skip</button>
-          <button class="guided-btn" style="margin-left:auto" onclick="cancelGuided()">Cancel</button>
-        </div>
-      </div>
+      <div class="voice-feedback" id="voiceFeedback">Try: "f8 125 flash on locate me note golden hour"</div>
       <div class="field" style="margin-bottom:12px">
         <label>Film stock</label>
         <select id="filmStock" onchange="onStockChange()">
@@ -266,23 +242,21 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catc
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').classList.add('show');});
 function doInstall(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('installBanner').classList.remove('show');});}
-let shots=[],frameCounter=1,state={DE:false,FL:false,mode:'Tv'},recognition=null;
-const STEPS=[
-  {key:'aperture',label:'Step 1 of 3 \u2014 Aperture',prompt:'Say your aperture',hint:'Say f-stop number e.g. "8", "5.6", "2.8"'},
-  {key:'shutter',label:'Step 2 of 3 \u2014 Shutter',prompt:'Say your shutter speed',hint:'Fraction: say number e.g. "125", "60" \u00b7 Long: say number + "seconds" e.g. "2 seconds" \u00b7 Or say "bulb"'},
-  {key:'notes',label:'Step 3 of 3 \u2014 Notes',prompt:'Say your notes, or skip',hint:'Light, subject, mood...'}
-];
-let guidedStep=-1,guidedHeard='',guidedParsed='';
+
+let shots=[],frameCounter=1,state={DE:false,FL:false,mode:'Tv'},recognition=null,isListening=false;
 const SK='shotlogger_shots',FK='shotlogger_frame';
 const FRAC={'1000':'1/1000','500':'1/500','250':'1/250','125':'1/125','60':'1/60','30':'1/30','15':'1/15','8':'1/8','4':'1/4','2':'1/2'};
 const LONG={'1':'1s','2':'2s','4':'4s','8':'8s','15':'15s','30':'30s'};
+
 function saveData(){try{localStorage.setItem(SK,JSON.stringify(shots));localStorage.setItem(FK,frameCounter);}catch(e){}}
 function loadData(){try{const s=localStorage.getItem(SK),f=localStorage.getItem(FK);if(s)shots=JSON.parse(s);if(f)frameCounter=parseInt(f);document.getElementById('frameNum').textContent=frameCounter;renderShots();}catch(e){}}
 function openReset(){document.getElementById('resetModal').classList.add('show');document.getElementById('modalOverlay').classList.add('show');}
 function closeReset(){document.getElementById('resetModal').classList.remove('show');document.getElementById('modalOverlay').classList.remove('show');}
 function doReset(){frameCounter=1;document.getElementById('frameNum').textContent=1;saveData();closeReset();}
+
 const apertureMap={'50mm':['f/1.8','f/2.8','f/3.5','f/4','f/5.6','f/8','f/11','f/16'],'28-85mm':['f/3.5','f/4','f/5.6','f/8','f/11','f/16','f/22'],'80-200mm':['f/4','f/5.6','f/8','f/11','f/16','f/22'],'100-300mm':['f/5.6','f/8','f/11','f/16','f/22','f/32']};
 const stockIsoMap={'ColorPlus 200':[200],'Ektar 100':[100],'Gold 200':[200],'Portra 160':[160],'Portra 400':[400],'Portra 800':[800],'T-Max 100':[100],'T-Max 400':[400],'T-Max P3200':[3200],'Tri-X 400':[400],'UltraMax 400':[400],'Delta 100':[100],'Delta 400':[400],'Delta 3200':[3200],'FP4 Plus 125':[125],'HP5 Plus 400':[400],'Ortho Plus 80':[80],'Pan F Plus 50':[50],'XP2 Super 400':[400],'50D':[50],'400D':[400],'800T':[800],'Double-X':[250],'Acros II 100':[100],'Neopan 400':[400],'Pro 160NS':[160],'Pro 400H':[400],'Provia 100F':[100],'Superia 100':[100],'Superia 200':[200],'Superia 400':[400],'Superia 800':[800],'Velvia 50':[50],'Velvia 100':[100],'Berlin Kino 400':[400],'Color Negative 100':[100],'Color Negative 200':[200],'Color Negative 400':[400],'Color Negative 800':[800],'Lady Grey 400':[400],'LomoChrome Metropolis 100-400':[100,200,400],'LomoChrome Purple 100-400':[100,200,400],'Potsdam Kino 100':[100]};
+
 function showCustom(s,c){const el=document.getElementById(s),i=document.getElementById(c);if(el.value==='Custom'){i.classList.add('show');i.focus();}else{i.classList.remove('show');i.value='';}}
 function onStockChange(){showCustom('filmStock','filmStockCustom');updateIsos();}
 function onLensChange(){showCustom('lens','lensCustom');updateApertures();}
@@ -295,20 +269,95 @@ function getFieldValue(s,c){const el=document.getElementById(s);if(el.value==='C
 function setSelVal(id,value){const sel=document.getElementById(id);for(let o of sel.options){if(o.value.toLowerCase()===value.toLowerCase()||o.text.toLowerCase()===value.toLowerCase()){sel.value=o.value;return true;}}return false;}
 function togglePill(k){state[k]=!state[k];document.getElementById('toggle'+k).classList.toggle('on',state[k]);}
 function setMode(m){state.mode=m;document.getElementById('toggleAv').classList.toggle('on',m==='Av');document.getElementById('toggleTv').classList.toggle('on',m==='Tv');}
-function getGPS(){const btn=document.getElementById('gpsBtn');btn.textContent='...';btn.disabled=true;if(!navigator.geolocation){document.getElementById('gpsInput').value='Not supported';btn.textContent='Locate';btn.disabled=false;return;}navigator.geolocation.getCurrentPosition(p=>{document.getElementById('gpsInput').value=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);btn.textContent='Locate';btn.disabled=false;},()=>{document.getElementById('gpsInput').value='Permission denied';btn.textContent='Locate';btn.disabled=false;});}
-function startGuided(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('Speech recognition not supported. Try Chrome or Edge.');return;}guidedStep=0;showGuidedPanel();listenForStep();}
-function showGuidedPanel(){const step=STEPS[guidedStep];document.getElementById('guidedPanel').classList.add('show');document.getElementById('guidedStepLabel').textContent=step.label;document.getElementById('guidedPrompt').textContent=step.prompt;document.getElementById('guidedHeard').textContent=step.hint;document.getElementById('guidedConfirm').style.display='none';document.getElementById('guidedRetry').style.display='none';updatePips();const btn=document.getElementById('micBtn');btn.classList.add('listening');btn.classList.remove('done');document.getElementById('micLabel').textContent='Listening...';}
-function updatePips(){document.getElementById('guidedProgress').innerHTML=STEPS.map((_,i)=>{let c='guided-pip';if(i<guidedStep)c+=' done';else if(i===guidedStep)c+=' active';return`<div class="${c}"></div>`;}).join('');}
-function listenForStep(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;recognition=new SR();recognition.lang='en-AU';recognition.interimResults=true;recognition.maxAlternatives=3;recognition.onresult=(e)=>{const interim=Array.from(e.results).map(r=>r[0].transcript).join(' ').toLowerCase();document.getElementById('guidedHeard').textContent='Hearing: "'+interim+'"...';if(e.results[e.results.length-1].isFinal){const alts=[];for(let r of e.results)for(let i=0;i<r.length;i++)alts.push(r[i].transcript.toLowerCase());guidedHeard=alts[0];if(handleSideChannel(guidedHeard))return;guidedParsed=parseStep(guidedStep,alts);if(guidedParsed){document.getElementById('guidedHeard').textContent='Heard: "'+guidedHeard+'" \u2192 '+guidedParsed;document.getElementById('guidedConfirm').style.display='';document.getElementById('guidedRetry').style.display='';}else{document.getElementById('guidedHeard').textContent='Couldn\'t match "'+guidedHeard+'" \u2014 retry or skip';document.getElementById('guidedRetry').style.display='';document.getElementById('guidedConfirm').style.display='none';}setMicIdle();}};recognition.onerror=()=>{document.getElementById('guidedHeard').textContent='Mic error \u2014 tap Retry';document.getElementById('guidedRetry').style.display='';setMicIdle();};recognition.onend=()=>setMicIdle();recognition.start();}
-function handleSideChannel(t){const gps=['locate me','get location','my location','current location','where am i','get gps'].some(k=>t.includes(k));if(gps){getGPS();document.getElementById('guidedHeard').textContent='Locating GPS \u2014 continue when ready';setMicIdle();return true;}if(t.includes('flash on')||(t.includes('flash')&&!t.includes('flash off'))){state.FL=true;document.getElementById('toggleFL').classList.add('on');document.getElementById('guidedHeard').textContent='Flash on \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}if(t.includes('flash off')){state.FL=false;document.getElementById('toggleFL').classList.remove('on');document.getElementById('guidedHeard').textContent='Flash off \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}if(t.includes('double exposure')||t.includes('double exp')){state.DE=!state.DE;document.getElementById('toggleDE').classList.toggle('on',state.DE);document.getElementById('guidedHeard').textContent='Double exposure '+(state.DE?'on':'off')+' \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}if(t.match(/\bav\b/)||t.includes('aperture priority')){setMode('Av');document.getElementById('guidedHeard').textContent='Mode: Av \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}if(t.match(/\btv\b/)||t.includes('shutter priority')){setMode('Tv');document.getElementById('guidedHeard').textContent='Mode: Tv \u2014 continuing...';setTimeout(()=>{setMicIdle();listenForStep();},800);return true;}return false;}
-function setMicIdle(){const btn=document.getElementById('micBtn');btn.classList.remove('listening');btn.classList.add('done');document.getElementById('micLabel').textContent='Dictating...';}
-function parseStep(idx,alts){const key=STEPS[idx].key;if(key==='aperture'){for(const t of alts){const m=t.match(/(\d+(?:[.,]\d+)?)/);if(m){const num=m[1].replace(',','.');return 'f/'+num;}}return null;}if(key==='shutter'){for(const t of alts){if(t.includes('bulb'))return 'Bulb';const longM=t.match(/(\d+)\s*second/);if(longM){const n=longM[1];return LONG[n]||(n+'s');}const numM=t.match(/(\d+)/);if(numM&&!t.includes('second')){const n=numM[1];if(FRAC[n])return FRAC[n];}}}if(key==='notes'){const t=alts[0].trim();return t.length>1?t:null;}return null;}
-function applyStep(idx,value){const key=STEPS[idx].key;if(key==='aperture'){if(!setSelVal('aperture',value)){document.getElementById('aperture').value='Custom';document.getElementById('apertureCustom').classList.add('show');document.getElementById('apertureCustom').value=value;}}else if(key==='shutter'){if(!setSelVal('shutter',value)){document.getElementById('shutter').value='Custom';document.getElementById('shutterCustom').classList.add('show');document.getElementById('shutterCustom').value=value;}}else if(key==='notes'){document.getElementById('noteInput').value=value;}}
-function confirmStep(){applyStep(guidedStep,guidedParsed);guidedStep++;guidedStep>=STEPS.length?finishGuided():(showGuidedPanel(),listenForStep());}
-function retryStep(){document.getElementById('guidedConfirm').style.display='none';document.getElementById('guidedRetry').style.display='none';document.getElementById('guidedHeard').textContent=STEPS[guidedStep].hint;const btn=document.getElementById('micBtn');btn.classList.add('listening');btn.classList.remove('done');document.getElementById('micLabel').textContent='Listening...';listenForStep();}
-function skipStep(){guidedStep++;guidedStep>=STEPS.length?finishGuided():(showGuidedPanel(),listenForStep());}
-function finishGuided(){document.getElementById('guidedPanel').classList.remove('show');const btn=document.getElementById('micBtn');btn.classList.remove('listening','done');document.getElementById('micLabel').textContent='Dictate';guidedStep=-1;if(recognition){try{recognition.stop();}catch(e){}recognition=null;}}
-function cancelGuided(){finishGuided();}
+
+function setFeedback(msg,clear){const el=document.getElementById('voiceFeedback');el.textContent=msg;if(clear)setTimeout(()=>{el.textContent='Try: "f8 125 flash on locate me note golden hour"';},3500);}
+
+function getGPS(fromVoice){
+  const btn=document.getElementById('gpsBtn');btn.textContent='...';btn.disabled=true;
+  if(fromVoice)setFeedback('Locating...',false);
+  if(!navigator.geolocation){document.getElementById('gpsInput').value='Not supported';btn.textContent='Locate';btn.disabled=false;if(fromVoice)setFeedback('GPS not supported.',true);return;}
+  navigator.geolocation.getCurrentPosition(p=>{document.getElementById('gpsInput').value=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);btn.textContent='Locate';btn.disabled=false;if(fromVoice)setFeedback('Set: location captured',true);},()=>{document.getElementById('gpsInput').value='Permission denied';btn.textContent='Locate';btn.disabled=false;if(fromVoice)setFeedback('GPS denied.',true);});
+}
+
+function toggleMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setFeedback('Not supported \u2014 try Chrome or Edge.',true);return;}
+  if(isListening){recognition.stop();return;}
+  recognition=new SR();recognition.lang='en-AU';recognition.interimResults=true;recognition.maxAlternatives=3;
+  recognition.onstart=()=>{isListening=true;document.getElementById('micBtn').classList.add('listening');document.getElementById('micLabel').textContent='Listening...';setFeedback('Speak now \u2014 say values for any fields you want to set');};
+  recognition.onresult=(e)=>{
+    const transcript=Array.from(e.results).map(r=>r[0].transcript).join(' ').toLowerCase();
+    if(e.results[e.results.length-1].isFinal){setFeedback('Heard: "'+transcript+'"',false);parseVoice(transcript,e.results);}
+    else setFeedback('Hearing: "'+transcript+'"...');
+  };
+  recognition.onerror=(e)=>{setFeedback('Mic error: '+e.error,true);stopMic();};
+  recognition.onend=()=>stopMic();
+  recognition.start();
+}
+function stopMic(){isListening=false;document.getElementById('micBtn').classList.remove('listening');document.getElementById('micLabel').textContent='Dictate';}
+
+function parseVoice(t,results){
+  const matched=[];
+  const alts=[];
+  if(results){for(let r of results)for(let i=0;i<r.length;i++)alts.push(r[i].transcript.toLowerCase());}
+  else alts.push(t);
+
+  // GPS
+  const gpsTriggered=['locate me','get location','my location','current location','where am i','get gps'].some(k=>t.includes(k));
+  if(gpsTriggered){getGPS(true);matched.push('GPS triggered');}
+
+  // Film stock
+  const stocks=[
+    ['colorplus','ColorPlus 200'],['ektar','Ektar 100'],['gold 200','Gold 200'],
+    ['portra 160','Portra 160'],['portra 400','Portra 400'],['portra 800','Portra 800'],
+    ['tmax 100','T-Max 100'],['t-max 100','T-Max 100'],['tmax 400','T-Max 400'],['t-max 400','T-Max 400'],
+    ['p3200','T-Max P3200'],['tri-x','Tri-X 400'],['tri x','Tri-X 400'],['ultramax','UltraMax 400'],
+    ['delta 100','Delta 100'],['delta 400','Delta 400'],['delta 3200','Delta 3200'],
+    ['fp4','FP4 Plus 125'],['hp5','HP5 Plus 400'],['ortho','Ortho Plus 80'],['pan f','Pan F Plus 50'],['xp2','XP2 Super 400'],
+    ['cinestill 50','50D'],['50d','50D'],['400d','400D'],['cinestill 400','400D'],
+    ['cinestill 800','800T'],['800t','800T'],['double-x','Double-X'],['double x','Double-X'],
+    ['acros','Acros II 100'],['neopan','Neopan 400'],['pro 160','Pro 160NS'],['pro 400h','Pro 400H'],
+    ['provia','Provia 100F'],['superia 100','Superia 100'],['superia 200','Superia 200'],
+    ['superia 400','Superia 400'],['superia 800','Superia 800'],['velvia 50','Velvia 50'],['velvia 100','Velvia 100'],
+    ['berlin','Berlin Kino 400'],['color negative 100','Color Negative 100'],['color negative 200','Color Negative 200'],
+    ['color negative 400','Color Negative 400'],['color negative 800','Color Negative 800'],
+    ['lady grey','Lady Grey 400'],['metropolis','LomoChrome Metropolis 100-400'],
+    ['lomochrome purple','LomoChrome Purple 100-400'],['purple','LomoChrome Purple 100-400'],['potsdam','Potsdam Kino 100'],
+  ];
+  for(const[k,v]of stocks){if(t.includes(k)){setSelVal('filmStock',v);document.getElementById('filmStockCustom').classList.remove('show');updateIsos();matched.push('stock: '+v);break;}}
+
+  // Lens
+  const lenses=[["50mm","50mm"],["50 mil","50mm"],["28 85","28-85mm"],["28-85","28-85mm"],["85mm","28-85mm"],["85","28-85mm"],["80 200","80-200mm"],["80-200","80-200mm"],["200mm","80-200mm"],["100 300","100-300mm"],["100-300","100-300mm"],["300mm","100-300mm"]];
+  for(const[k,v]of lenses){if(t.includes(k)){document.getElementById('lens').value=v;updateApertures();matched.push('lens: '+v);break;}}
+
+  // Aperture — f/number or bare decimal
+  const apMatch=t.match(/f[\s\/]?(\d+(?:[.,]\d+)?)/);
+  if(apMatch){const val='f/'+apMatch[1].replace(',','.');if(setSelVal('aperture',val))matched.push('aperture: '+val);}
+  else{const decMatch=t.match(/\b(\d+\.\d+)\b/);if(decMatch){const val='f/'+decMatch[1];if(setSelVal('aperture',val))matched.push('aperture: '+val);}}
+
+  // Shutter: long exposure = number + "second(s)", bulb, else bare number = 1/x
+  const longM=t.match(/(\d+)\s*second/);
+  if(longM){const n=longM[1];const v=LONG[n]||(n+'s');if(setSelVal('shutter',v))matched.push('shutter: '+v);}
+  else if(t.includes('bulb')){if(setSelVal('shutter','Bulb'))matched.push('shutter: Bulb');}
+  else{
+    const numMatches=t.match(/\b(\d{1,4})\b/g);
+    if(numMatches){for(const n of numMatches){if(FRAC[n]){if(setSelVal('shutter','1/'+n)){matched.push('shutter: 1/'+n);break;}}}}
+  }
+
+  // Toggles
+  if(t.includes('flash on')||(t.includes('flash')&&!t.includes('flash off'))){state.FL=true;document.getElementById('toggleFL').classList.add('on');matched.push('flash on');}
+  if(t.includes('flash off')){state.FL=false;document.getElementById('toggleFL').classList.remove('on');matched.push('flash off');}
+  if(t.includes('double exposure')||t.includes('double exp')){state.DE=true;document.getElementById('toggleDE').classList.add('on');matched.push('double exposure');}
+  if(t.match(/\bav\b/)||t.includes('aperture priority')){setMode('Av');matched.push('mode: Av');}
+  if(t.match(/\btv\b/)||t.includes('shutter priority')){setMode('Tv');matched.push('mode: Tv');}
+
+  // Notes
+  const noteM=t.match(/notes?\s+(.+)$/);
+  if(noteM){document.getElementById('noteInput').value=noteM[1].trim();matched.push('note added');}
+
+  if(!gpsTriggered)setFeedback(matched.length?'Set: '+matched.join(', '):'Nothing recognised',true);
+}
+
 function logShot(){const now=new Date();shots.unshift({id:Date.now(),frame:frameCounter,stock:getFieldValue('filmStock','filmStockCustom'),lens:getFieldValue('lens','lensCustom'),iso:getFieldValue('iso','isoCustom'),aperture:getFieldValue('aperture','apertureCustom'),shutter:getFieldValue('shutter','shutterCustom'),gps:document.getElementById('gpsInput').value,note:document.getElementById('noteInput').value,time:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),date:now.toLocaleDateString([],{month:'short',day:'numeric'}),roll:document.getElementById('rollName').value||'Unnamed roll',de:state.DE,flash:state.FL,mode:state.mode});frameCounter++;document.getElementById('frameNum').textContent=frameCounter;document.getElementById('noteInput').value='';state.DE=false;state.FL=false;['toggleDE','toggleFL'].forEach(id=>document.getElementById(id).classList.remove('on'));saveData();renderShots();}
 function deleteShot(id){shots=shots.filter(s=>s.id!==id);saveData();renderShots();}
 function renderShots(){const list=document.getElementById('shotList'),card=document.getElementById('shotsCard'),empty=document.getElementById('emptyState');document.getElementById('shotCount').textContent=shots.length+(shots.length===1?' frame':' frames')+' logged';if(!shots.length){card.style.display='none';empty.style.display='block';return;}card.style.display='block';empty.style.display='none';list.innerHTML=shots.map(s=>{const chips=[s.stock,s.lens,s.iso?'ISO '+s.iso:'',s.aperture,s.shutter,s.mode].filter(Boolean);const hi=[s.de?'Double exp':'',s.flash?'Flash':''].filter(Boolean);return`<div class="shot-card"><div class="shot-head"><span class="shot-num">Frame ${s.frame} &middot; ${s.roll}</span><div style="display:flex;align-items:center;gap:8px"><span class="shot-time">${s.date} &middot; ${s.time}</span><button class="del-btn" onclick="deleteShot(${s.id})">&#x2715;</button></div></div><div class="chip-row">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}${hi.map(c=>`<span class="chip chip-hi">${c}</span>`).join('')}</div>${s.gps?`<div class="shot-gps">${s.gps}</div>`:''}${s.note?`<div class="shot-note">${s.note}</div>`:''}</div>`;}).join('');}
