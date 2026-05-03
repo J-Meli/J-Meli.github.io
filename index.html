@@ -20,7 +20,7 @@
   --yellow-bg:#3d3000;--yellow-border:#D4AC0D;--yellow-text:#F4D03F;
   --green-bg:#0f3d1f;--green-border:#1E8449;--green-text:#27AE60;
   --blue-bg:#0f2540;--blue-border:#2980B9;--blue-text:#5DADE2;
-  --white-bg:#e8e8e8;--white-border:#ffffff;--white-text:#111111;--warm-bg:#fdf3e3;--warm-border:#d4a96a;--warm-text:#5c3a00;--purple-bg:#1e0f40;--purple-border:#7c3aed;--purple-text:#c4b5fd;
+  --white-bg:#f0f0f0;--white-border:#888888;--white-text:#111111;--warm-bg:#fdf3e3;--warm-border:#d4a96a;--warm-text:#5c3a00;--purple-bg:#1e0f40;--purple-border:#7c3aed;--purple-text:#c4b5fd;
   --chip-bg:#3a3a3a;--radius:12px;--radius-sm:8px;--radius-pill:20px;
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
 }
@@ -213,7 +213,7 @@ textarea{resize:none;height:64px;}
         <div class="pill pill-flash" id="toggleFL" onclick="togglePill('FL')"><span>Flash</span></div>
         <div class="pill pill-av" id="toggleAv" onclick="setMode('Av')"><div class="pill-icon"><div class="av-icon"></div></div><span>Av</span></div>
         <div class="pill pill-tv on" id="toggleTv" onclick="setMode('Tv')"><div class="pill-icon"><div class="tv-icon"></div></div><span>Tv</span></div>
-        <div class="pill pill-pa" id="togglePA" onclick="setMode('PA')"><div class="pill-icon"><div class="dot-icon"></div></div><span style="font-weight:700">PA</span></div>
+        <div class="pill pill-pa" id="togglePA" onclick="setMode('PA')"><span><strong>P</strong>Auto</span></div>
       </div>
       <div class="grid2">
         <div class="field">
@@ -273,14 +273,14 @@ textarea{resize:none;height:64px;}
     <div class="batt-btn-wrap">
       <button class="batt-btn" onclick="openBatt()" title="Battery">
         <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1" y="5" width="17" height="12" rx="2" stroke="#C0392B" stroke-width="1.6" fill="none"/>
-          <path d="M18 9v4" stroke="#C0392B" stroke-width="2" stroke-linecap="round"/>
-          <rect x="3.5" y="7.5" width="12" height="7" rx="1" fill="#C0392B"/>
+          <rect x="5" y="3" width="12" height="17" rx="2" stroke="#C0392B" stroke-width="1.6" fill="none"/>
+          <path d="M9 3v-2h4v2" stroke="#C0392B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="7.5" y="5.5" width="7" height="12" rx="1" fill="#C0392B"/>
         </svg>
       </button>
       <svg class="batt-label-svg" viewBox="0 0 56 56">
         <path id="topArc" d="M 8,28 A 20,20 0 0,1 48,28" fill="none"/>
-        <path id="botArc" d="M 48,28 A 20,20 0 0,1 8,28" fill="none"/>
+        <path id="botArc" d="M 8,28 A 20,20 0 0,0 48,28" fill="none"/>
         <text font-size="7.5" fill="#C0392B" font-family="-apple-system,sans-serif" font-weight="500" letter-spacing="0.5">
           <textPath href="#topArc" startOffset="50%" text-anchor="middle">BATTERY</textPath>
         </text>
